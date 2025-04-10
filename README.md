@@ -1,13 +1,14 @@
-# Projet fil rouge
 
-## Introduction
+# Projet fil rouge — Microservices avec Kubernetes
 
-Ce projet est une application microservices construite avec Node.js et React. Il est conçu pour être déployé sur Kubernetes.
+## Présentation
+
+Ce projet est une application en microservices développée avec **Node.js** et **React**, déployée dans un environnement **Kubernetes**.  
+Il a été réalisé dans le cadre du **Master Dev IA — Groupe 6**.
 
 ## Table des matières
 
-- [Introduction](#introduction)
-- [Table des matières](#table-des-matières)
+- [Présentation](#présentation)
 - [Architecture](#architecture)
 - [Chemins d'Ingress](#chemins-dingress)
 - [Noms de Services Kubernetes](#noms-de-services-kubernetes)
@@ -15,93 +16,160 @@ Ce projet est une application microservices construite avec Node.js et React. Il
 - [Prérequis](#prérequis)
 - [Installation](#installation)
 - [Déploiement](#déploiement)
+- [Accès à l'application](#accès-à-lapplication)
+- [Scripts complémentaires](#scripts-complémentaires)
+- [Installation du NGINX Ingress Controller](#installation-du-nginx-ingress-controller)
+- [Lancement des scripts](#lancement-des-scripts)
 
 ## Architecture
 
 L'application est composée des services suivants :
 
-- **Client** : Interface utilisateur construite avec React.
-- **Posts** : Service pour la gestion des posts.
-- **Comments** : Service pour la gestion des commentaires.
-- **Query** : Service pour la gestion des requêtes.
-- **Moderation** : Service pour la modération des commentaires.
-- **Event Bus** : Service pour la gestion des événements entre les services.
+- **Client** : Interface utilisateur (React)
+- **Posts** : Création de posts
+- **Comments** : Ajout de commentaires
+- **Query** : Regroupement des données
+- **Moderation** : Modération automatique
+- **Event Bus** : Système de communication entre services
 
-### Chemins d'Ingress
+## Chemins d'Ingress
 
-- `/posts/create` : Dirigé vers le service `posts-clusterip-srv` sur le port 4000.
-  - Utilisé pour créer de nouveaux posts.
-  
-- `/posts` : Dirigé vers le service `query-srv` sur le port 4002.
-  - Utilisé pour récupérer la liste des posts existants.
-  
-- `/posts/?(.*)/comments` : Dirigé vers le service `comments-srv` sur le port 4001.
-  - Utilisé pour créer ou récupérer les commentaires associés à un post spécifique.
-  
-- `/?(.*)` : Dirigé vers le service `client-srv` sur le port 3000.
-  - Utilisé pour accéder à l'interface utilisateur.
- 
+| Chemin                                | Service Kubernetes       | Port |
+|--------------------------------------|--------------------------|------|
+| `/posts/create`                      | `posts-clusterip-srv`    | 4000 |
+| `/posts`                             | `query-srv`              | 4002 |
+| `/posts/?(.*)/comments`              | `comments-srv`           | 4001 |
+| `/?(.*)` (interface utilisateur)     | `client-srv`             | 3000 |
 
+## Noms de Services Kubernetes
 
-### Noms de Services Kubernetes
+| Nom du service Kubernetes | Rôle |
+|---------------------------|------|
+| `client-srv`              | Interface utilisateur React |
+| `posts-clusterip-srv`     | API de création de posts |
+| `query-srv`               | Service d'agrégation |
+| `comments-srv`            | Gestion des commentaires |
+| `moderation-srv`          | Filtrage de contenu |
+| `event-bus-srv`           | Transmission d'événements |
 
-Assurez-vous que les noms de services dans vos fichiers de déploiement Kubernetes correspondent aux noms de services utilisés dans le code de l'application. Voici les noms de services attendus :
+## Ports des Services
 
-- **client-srv**: Service pour l'interface utilisateur.
-- **posts-clusterip-srv**: Service pour la gestion des posts.
-- **query-srv**: Service pour la gestion des requêtes.
-- **comments-srv**: Service pour la gestion des commentaires.
-- **moderation-srv**: Service pour la modération des commentaires.
-- **event-bus-srv**: Service pour la gestion des événements entre les services.
-
-Si vous modifiez ces noms, assurez-vous également de mettre à jour les références correspondantes dans le code de l'application.
-
-
-### Ports des Services
-
-Chaque service écoute sur un port spécifique. Assurez-vous que ces ports sont correctement configurés dans vos fichiers de déploiement Kubernetes et dans tout autre outil de gestion des conteneurs que vous pourriez utiliser. Voici les ports attendus pour chaque service :
-
-- **client-srv**: Écoute sur le port 3000.
-- **posts-clusterip-srv**: Écoute sur le port 4000.
-- **query-srv**: Écoute sur le port 4002.
-- **comments-srv**: Écoute sur le port 4001.
-- **moderation-srv**: Écoute sur le port 4003.
-- **event-bus-srv**: Écoute sur le port 4005.
-
-Si vous modifiez ces ports, assurez-vous également de mettre à jour les références correspondantes dans le code de l'application et les fichiers de configuration Kubernetes.
-
+| Service                | Port |
+|------------------------|------|
+| `client-srv`           | 3000 |
+| `posts-clusterip-srv`  | 4000 |
+| `query-srv`            | 4002 |
+| `comments-srv`         | 4001 |
+| `moderation-srv`       | 4003 |
+| `event-bus-srv`        | 4005 |
 
 ## Prérequis
 
 - Node.js
 - Docker
-- Kubernetes
+- Kubernetes (via Docker Desktop ou Minikube)
+- NGINX Ingress Controller
 
 ## Installation
 
-1. Clonez ce dépôt :
-    ```bash
-    git clone https://github.com/Mossbaddi/Pojet_fil_rouge.git
-    ```
+1. Cloner le dépôt :
 
-2. Installez les dépendances pour chaque service :
-    ```bash
-    cd client && npm install
-    cd ../posts && npm install
-    # Répétez pour tous les services
-    ```
+```bash
+git clone https://github.com/nicolasdraperi/Microservice-groupe6.git
+cd Microservice-groupe6
+```
+
+2. Installer les dépendances pour chaque service :
+
+```bash
+cd client && npm install
+cd ../posts && npm install
+cd ../comments && npm install
+cd ../query && npm install
+cd ../moderation && npm install
+cd ../event-bus && npm install
+```
 
 ## Déploiement
 
-1. Construisez les images Docker pour chaque service :
-    ```bash
-    docker build -t client ./client
-    docker build -t posts ./posts
-    # Répétez pour tous les services
-    ```
-    Le projet est basé sur l'image **node:alpine**
+### Étape 1 — Construction des images Docker  
 
-2. Déployez les services sur Kubernetes :
-    ```bash
-    kubectl apply -f k8s/
-    ```
+📌 **Depuis la racine du projet** :
+
+```bash
+docker build -t client ./client
+docker build -t posts ./posts
+docker build -t comments ./comments
+docker build -t query ./query
+docker build -t moderation ./moderation
+docker build -t event-bus ./event-bus
+```
+
+### Étape 2 — Déploiement sur Kubernetes  
+
+📌 **Depuis le dossier `infra/k8s`** :
+
+```bash
+cd infra/k8s
+kubectl apply -f .
+```
+
+## Accès à l'application
+
+Le domaine par défaut est `posts.com` (défini dans `infra/k8s/ingress-srv.yaml`).
+
+### Pour utiliser `http://posts.com`
+
+Modifier le fichier `hosts` de votre système.
+
+#### Sous Windows :
+1. Ouvrir Bloc-notes en **administrateur**
+2. Modifier le fichier : `C:\Windows\System32\drivers\etc\hosts`
+3. Ajouter cette ligne à la fin du fichier :
+```
+127.0.0.1 posts.com
+```
+
+#### Sous Mac/Linux :
+```bash
+sudo nano /etc/hosts
+```
+Ajouter :
+```
+127.0.0.1 posts.com
+```
+
+Accès à l’interface : [http://posts.com](http://posts.com)
+
+### Option alternative
+
+Vous pouvez remplacer `posts.com` par `localhost` dans le fichier `infra/k8s/ingress-srv.yaml`.
+
+Accès ensuite : [http://localhost:3000](http://localhost:3000)
+
+## Installation du NGINX Ingress Controller
+
+Si vous ne l’avez pas déjà installé, exécutez :
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.9.4/deploy/static/provider/cloud/deploy.yaml
+```
+
+Vérifier que tout est bien lancé :
+
+```bash
+kubectl get pods -n ingress-nginx
+```
+## Scripts complémentaires (Bonus)
+### Lancement des scripts
+
+📌 Depuis la racine du projet :
+
+```bash
+./k8s-reset-total.sh      # Réinitialise le cluster
+./build-and-deploy.sh     # Build et déploie tous les services
+```
+
+---
+
+Projet réalisé dans le cadre du **Master Dev IA — Groupe 6**.
