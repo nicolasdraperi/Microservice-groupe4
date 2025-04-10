@@ -94,7 +94,7 @@ cd ../event-bus && npm install
 
 ### Étape 1 — Construction des images Docker  
 
-📌 **Depuis la racine du projet** :
+- **Depuis la racine du projet** :
 
 ```bash
 docker build -t client ./client
@@ -107,7 +107,7 @@ docker build -t event-bus ./event-bus
 
 ### Étape 2 — Déploiement sur Kubernetes  
 
-📌 **Depuis le dossier `infra/k8s`** :
+- **Depuis le dossier `infra/k8s`** :
 
 ```bash
 cd infra/k8s
@@ -163,7 +163,7 @@ kubectl get pods -n ingress-nginx
 ## Scripts complémentaires (Bonus)
 ### Lancement des scripts
 
-📌 Depuis la racine du projet :
+- Depuis la racine du projet :
 
 ```bash
 ./k8s-reset-total.sh      # Réinitialise le cluster
