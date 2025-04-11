@@ -177,4 +177,4 @@ Si la requête est réussie, vous recevrez une réponse avec l'ID et le titre du
 
 ---
 
-Projet réalisé dans le cadre du **Master Dev IA — Groupe 6**.
+Projet réalisé dans le cadre du **Master Dev IA — Groupe 4**.
