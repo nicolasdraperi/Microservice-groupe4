@@ -4,7 +4,7 @@
 ## Présentation
 
 Ce projet est une application en microservices développée avec **Node.js** et **React**, déployée dans un environnement **Kubernetes**.  
-Il a été réalisé dans le cadre du **Master Dev IA — Groupe 6** par
+Il a été réalisé dans le cadre du **Master Dev IA — Groupe 6**.
  - Nicolas Draperi
  - Hugo KHALED BROTONS
  - Nail BENAMER
