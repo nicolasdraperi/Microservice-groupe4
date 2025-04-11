@@ -23,4 +23,4 @@ kubectl get ingress
 
 echo ""
 echo "✅ Cluster propre. Tu peux maintenant redeployer avec :"
-echo "kubectl apply -f ./infra/k8s/"
+echo "kubectl apply -f ./infra/k8s/ ou ./build-and-deploy.sh"

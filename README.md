@@ -17,9 +17,9 @@ Il a été réalisé dans le cadre du **Master Dev IA — Groupe 6**.
 - [Installation](#installation)
 - [Déploiement](#déploiement)
 - [Accès à l'application](#accès-à-lapplication)
-- [Scripts complémentaires](#scripts-complémentaires)
 - [Installation du NGINX Ingress Controller](#installation-du-nginx-ingress-controller)
 - [Lancement des scripts](#lancement-des-scripts)
+- [Utilisation de `curl`](#utilisation-de-curl)
 
 ## Architecture
 
@@ -116,36 +116,12 @@ kubectl apply -f .
 
 ## Accès à l'application
 
-Le domaine par défaut est `posts.com` (défini dans `infra/k8s/ingress-srv.yaml`).
+Le domaine par défaut est `localhost` (défini dans `infra/k8s/ingress-srv.yaml`).
 
-### Pour utiliser `http://posts.com`
+### Pour utiliser `http://localhost`
 
-Modifier le fichier `hosts` de votre système.
-
-#### Sous Windows :
-1. Ouvrir Bloc-notes en **administrateur**
-2. Modifier le fichier : `C:\Windows\System32\drivers\etc\hosts`
-3. Ajouter cette ligne à la fin du fichier :
-```
-127.0.0.1 posts.com
-```
-
-#### Sous Mac/Linux :
-```bash
-sudo nano /etc/hosts
-```
-Ajouter :
-```
-127.0.0.1 posts.com
-```
-
-Accès à l’interface : [http://posts.com](http://posts.com)
-
-### Option alternative
-
-Vous pouvez remplacer `posts.com` par `localhost` dans le fichier `infra/k8s/ingress-srv.yaml`.
-
-Accès ensuite : [http://localhost:3000](http://localhost:3000)
+Accédez à l'interface via :  
+[http://localhost](http://localhost)
 
 ## Installation du NGINX Ingress Controller
 
@@ -155,19 +131,38 @@ Si vous ne l’avez pas déjà installé, exécutez :
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.9.4/deploy/static/provider/cloud/deploy.yaml
 ```
 
-Vérifier que tout est bien lancé :
+Vérifiez que tout est bien lancé :
 
 ```bash
 kubectl get pods -n ingress-nginx
 ```
-## Scripts complémentaires (Bonus)
-### Lancement des scripts
+
+## Lancement des scripts (BONUS)
 
 - Depuis la racine du projet :
 
 ```bash
 ./k8s-reset-total.sh      # Réinitialise le cluster
 ./build-and-deploy.sh     # Build et déploie tous les services
+```
+
+---
+
+## Utilisation de `curl`
+
+Pour créer un post via la ligne de commande avec **curl**, voici la commande à exécuter dans **Git Bash** :
+
+```bash
+curl -X POST http://localhost/posts/create -H "Content-Type: application/json" -d '{"title":"Test"}'
+```
+
+Si la requête est réussie, vous recevrez une réponse avec l'ID et le titre du post :
+
+```json
+{
+  "id": "e33a5526",
+  "title": "Test"
+}
 ```
 
 ---

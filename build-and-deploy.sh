@@ -23,4 +23,4 @@ kubectl get svc
 kubectl get ingress
 
 echo ""
-echo "🌍 Ouvre maintenant : http://posts.com"
+echo "🌍 Ouvre maintenant : http://localhost/"
