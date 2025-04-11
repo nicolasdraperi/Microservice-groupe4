@@ -32,6 +32,14 @@ L'application est composée des services suivants :
 - **Moderation** : Modération automatique
 - **Event Bus** : Système de communication entre services
 
+## Prérequis
+
+- Node.js
+- Docker
+- Kubernetes (via Docker Desktop ou Minikube)
+- NGINX Ingress Controller
+
+
 ## Chemins d'Ingress
 
 | Chemin                                | Service Kubernetes       | Port |
@@ -62,13 +70,6 @@ L'application est composée des services suivants :
 | `comments-srv`         | 4001 |
 | `moderation-srv`       | 4003 |
 | `event-bus-srv`        | 4005 |
-
-## Prérequis
-
-- Node.js
-- Docker
-- Kubernetes (via Docker Desktop ou Minikube)
-- NGINX Ingress Controller
 
 ## Installation
 
@@ -123,6 +124,8 @@ Le domaine par défaut est `localhost` (défini dans `infra/k8s/ingress-srv.yaml
 Accédez à l'interface via :  
 [http://localhost](http://localhost)
 
+---
+
 ## Installation du NGINX Ingress Controller
 
 Si vous ne l’avez pas déjà installé, exécutez :
@@ -136,17 +139,6 @@ Vérifiez que tout est bien lancé :
 ```bash
 kubectl get pods -n ingress-nginx
 ```
-
-## Lancement des scripts (BONUS)
-
-- Depuis la racine du projet :
-
-```bash
-./k8s-reset-total.sh      # Réinitialise le cluster
-./build-and-deploy.sh     # Build et déploie tous les services
-```
-
----
 
 ## Utilisation de `curl`
 
@@ -163,6 +155,17 @@ Si la requête est réussie, vous recevrez une réponse avec l'ID et le titre du
   "id": "e33a5526",
   "title": "Test"
 }
+```
+
+---
+
+## Lancement des scripts (BONUS)
+
+- Depuis la racine du projet :
+
+```bash
+./k8s-reset-total.sh      # Réinitialise le cluster
+./build-and-deploy.sh     # Build et déploie tous les services
 ```
 
 ---
